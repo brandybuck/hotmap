@@ -1,16 +1,21 @@
 /* Creates a small triangle extender for the tooltip */
+
+
+.tipText {
+    font-size: 12px;
+    font-family: "Helvetica";
+
+}
+
 .d3-tip {
     line-height: 1;
-    background: #66ccff;
-    color: #000;
+    padding: 12px;
+    background: #0b97c4;
+    color: #fff;
     border-radius: 2px;
 }
 
-.tipText {
-    font-size: 10px;
-    font-family: "Arial";
 
-}
 
 /* Style northward tooltips differently */
 .d3-tip.n:after {
@@ -18,3 +23,4 @@
     top: 100%;
     left: 0;
 }
+
