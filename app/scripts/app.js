@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('hotmapApp', [
+var app = angular.module('hotmapApp', [
   'ngResource',
   'ngRoute'
 ])
