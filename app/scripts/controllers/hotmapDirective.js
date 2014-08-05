@@ -7,24 +7,29 @@ app.directive('hotmap', function ($parse) {
             //We restrict its use to an element
             //as usually  <hotmap> is semantically
             //more understandable
-            restrict: 'E',
+            //We restrict its use to an attribute
+            //as it is compliant across most browsers
+            restrict: 'EA',
             //this is important,
             //we don't want to overwrite our directive declaration
             //in the HTML mark-up
             replace: false,
             //our data source would be an array
             //passed thru map-data attribute
-            scope: {data: '=mapData'},
+            scope: {
+                artifacts : '=',
+                rows : '=',
+                columns : '=',
+                refreshURL: '@'
+            },
             link: function (scope, element, attrs) {
 
                 //Make an SVG Container
                 var svgContainer = d3.select("body").append("svg")
                     .style("padding-left","25px")
-                    .style("padding-right","25px")
                     .style("padding-top","25px")
-                    .style("padding-bottom","25px")
-                    .attr("width", 1000)
-                    .attr("height", 1000);
+                    .attr("width", "100%")
+                    .attr("height", "100%");
 
 
                 var tooltip = d3.tip()
@@ -54,24 +59,24 @@ app.directive('hotmap', function ($parse) {
 
                 //Draw the Rectangle
 
-                var number = 50;
+                var number = scope.artifacts;
                 var offset = 10 - (number % 10);
                 var newNr = number + offset;
                 console.log(newNr);
-                var columns = 50;
+                var columns = scope.artifacts;
                 var rows = newNr/5;
                 console.log(rows);
                 var yaxis = 10;
-                var yaxisoffset = 12;
+                var yaxisoffset = 20; 
 
                 for(var j=0;j<rows;j++){
                     var xaxis = 10;
-                    var xaxisoffset = 12;
+                    var xaxisoffset = 20;
                     for(var i=0;i<50;i++) {
                         var rectangle = svgContainer.append("rect")
                             .attr("x", xaxis)
                             .attr("y", yaxis)
-                            .attr("width", 10)
+                            .attr("width", 10) 
                             .attr("height", 10)
                             .style("fill","#F0F0F0");
                         rectangle.on("mouseover",tooltip.show);
@@ -84,13 +89,17 @@ app.directive('hotmap', function ($parse) {
                 var s1 = d3.selectAll("rect").call(tooltip);
                 s1.call(inProgressTooltip);
                 s1.call(completedTooltip);
-                d3.select(s1[0][1]).style("fill","orange");
+                d3.select(s1[0][1]).style("fill","#00B200");
                 d3.select(s1[0][1]).on("mouseover",inProgressTooltip.show);
                 d3.select(s1[0][1]).on("mouseout",inProgressTooltip.hide);
 
-                d3.select(s1[0][2]).style("fill","green");
+                d3.select(s1[0][2]).style("fill","#00B200");
                 d3.select(s1[0][2]).on("mouseover",completedTooltip.show);
                 d3.select(s1[0][2]).on("mouseout",completedTooltip.hide);
+
+	        d3.select(s1[0][5]).style("fill","#00B200");
+                d3.select(s1[0][5]).on("mouseover",completedTooltip.show);
+                d3.select(s1[0][5]).on("mouseout",completedTooltip.hide);
 
             }
         };
