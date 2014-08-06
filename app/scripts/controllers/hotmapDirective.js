@@ -1,7 +1,7 @@
 /**
  * Created by prianant on 23/06/14.
  */
-app.directive('hotmap', function ($parse) {
+app.directive('hotmap', function ($parse,$interval) {
 
         var directiveDefinitionObject = {
             //We restrict its use to an element
@@ -31,7 +31,6 @@ app.directive('hotmap', function ($parse) {
                     .attr("width", "100%")
                     .attr("height", "100%");
 
-
                 var tooltip = d3.tip()
                     .attr("class", "d3-tip")
                     .offset([0,5])
@@ -48,7 +47,6 @@ app.directive('hotmap', function ($parse) {
                         return "<div class=\"tipText\">In progress</div>";
                     });
 
-
                 var completedTooltip = d3.tip()
                     .attr("class", "d3-tip")
                     .offset([0,5])
@@ -58,13 +56,16 @@ app.directive('hotmap', function ($parse) {
                     });
 
                 //Draw the Rectangle
-
                 var number = scope.artifacts;
                 var offset = 10 - (number % 10);
+                if(offset == 10) {
+                    offset = 0;
+                }
                 var newNr = number + offset;
                 console.log(newNr);
-                var columns = scope.artifacts;
-                var rows = newNr/5;
+                var columns = newNr/5;
+                var rows = 5;
+                console.log(columns);
                 console.log(rows);
                 var yaxis = 10;
                 var yaxisoffset = 20; 
@@ -72,7 +73,7 @@ app.directive('hotmap', function ($parse) {
                 for(var j=0;j<rows;j++){
                     var xaxis = 10;
                     var xaxisoffset = 20;
-                    for(var i=0;i<50;i++) {
+                    for(var i=0;i<columns;i++) {
                         var rectangle = svgContainer.append("rect")
                             .attr("x", xaxis)
                             .attr("y", yaxis)
@@ -85,9 +86,9 @@ app.directive('hotmap', function ($parse) {
                     }
                     yaxis += yaxisoffset;
                 }
-
                 var s1 = d3.selectAll("rect").call(tooltip);
-                s1.call(inProgressTooltip);
+
+                /**s1.call(inProgressTooltip);
                 s1.call(completedTooltip);
                 d3.select(s1[0][1]).style("fill","#00B200");
                 d3.select(s1[0][1]).on("mouseover",inProgressTooltip.show);
@@ -97,11 +98,26 @@ app.directive('hotmap', function ($parse) {
                 d3.select(s1[0][2]).on("mouseover",completedTooltip.show);
                 d3.select(s1[0][2]).on("mouseout",completedTooltip.hide);
 
-	        d3.select(s1[0][5]).style("fill","#00B200");
+	            d3.select(s1[0][5]).style("fill","#00B200");
                 d3.select(s1[0][5]).on("mouseover",completedTooltip.show);
-                d3.select(s1[0][5]).on("mouseout",completedTooltip.hide);
+                d3.select(s1[0][5]).on("mouseout",completedTooltip.hide); */
 
-            }
-        };
-        return directiveDefinitionObject;
+                stop = $interval(function() {
+                    var filler = Math.floor(Math.random() * scope.artifacts) + 1;
+                    d3.select(s1[0][filler]).style("fill","#00B200");
+                },500);
+
+        },
+        controller: ['$scope',function($scope){
+
+            $scope.stopRefresh = function() {
+                if (angular.isDefined(stop)) {
+                    $interval.cancel(stop);
+                    stop = undefined;
+                }
+            };
+        }]
+     }
+     return directiveDefinitionObject;
+
     });
